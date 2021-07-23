@@ -13,14 +13,55 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _formkey = GlobalKey<FormBuilderState>();
+  TextEditingController controllernama = new TextEditingController();
+  TextEditingController controllertempat = new TextEditingController();
+  TextEditingController controllerjalan = new TextEditingController();
+  TextEditingController controllertanggal = new TextEditingController();
+  void _kirimdata() {
+    AlertDialog alertDialog = new AlertDialog(
+      content: new Container(
+        height: 200.0,
+        child: new Column(
+          children: [
+            new Text("Nama Lengkap : ${controllernama.text}"),
+            new Text("Tempat : ${controllertempat.text}"),
+            new Text("Jalan : ${controllerjalan.text}"),
+            new Text("Tanggal : ${controllertanggal.text}"),
+            ElevatedButton(
+              child: new Text("OK"),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        ),
+      ),
+    );
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
-    var provinsiOptions = ["Jakarta", "Bandung", "Banten"];
-    var kotaOptions = ["Cengkareng", "Meruya", "Joglo"];
-    var kecamatanOptions = [" ", " "];
-    var kelurahanOptions = [" ", " "];
-    var rtOptions = [
+    List<String> provinsiOptions = ["Jakarta", "Bandung", "Banten"];
+    List<String> kotaOptions = ["Cengkareng", "Meruya", "Joglo"];
+    List<String> kecamatanOptions = [
+      "Banjarsari",
+      "Bayah",
+      "Bojongmanik",
+      "Cibadak",
+      "Cibeber",
+      "Cigemblong",
+      "Cihara"
+    ];
+    List<String> kelurahanOptions = [
+      "Bojongmenteng",
+      "Cibugur",
+      "Cisimeut",
+      "Kanekes"
+    ];
+    List<String> rtOptions = [
       "01",
       "02",
       "03",
@@ -32,18 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
       "09",
       "10"
     ];
-    var rwOptions = [
-      "01",
-      "02",
-      "03",
-      "04",
-      "05",
-      "06",
-      "07",
-      "08",
-      "09",
-      "10"
-    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ColorPalette.lg,
@@ -96,9 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
               child: FormBuilderTextField(
-                  onChanged: (text) {},
+                  controller: controllernama,
                   decoration: InputDecoration(
-                      labelText: "Nama",
+                      labelText: " ",
                       fillColor: ColorPalette.lg,
                       filled: true,
                       border: OutlineInputBorder(
@@ -112,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Center(
                 child: Container(
                   child: FormBuilderChoiceChip(
-                    decoration: InputDecoration(labelText: 'Jenis Kelamin'),
+                    labelPadding: EdgeInsets.all(4),
                     alignment: WrapAlignment.spaceEvenly,
                     name: 'jeniskelamin',
                     validator: FormBuilderValidators.required(context),
@@ -127,37 +157,36 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(40, 30, 30, 30),
-              child: Row(
-                children: [
-                  Flexible(
-                    child: FormBuilderTextField(
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                            labelText: "Tempat",
-                            fillColor: ColorPalette.lg,
-                            filled: true,
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(20)),
-                            hintText: "Tempat"),
-                        name: 'Tempat'),
-                  ),
-                  SizedBox(
-                    width: 20.20,
-                    height: 20.0,
-                  ),
-                  Flexible(
-                    child: FormBuilderTextField(
-                        onTap: () {
-                          FocusScope.of(context).requestFocus(new FocusNode());
-                          showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2019, 1),
-                            lastDate: DateTime(2021, 12),
-                          );
-                        },
+              padding: const EdgeInsets.fromLTRB(40, 30, 20, 30),
+              child: Container(
+                width: 40.0,
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: FormBuilderTextField(
+                          controller: controllertempat,
+                          decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(10, 10, 10, 10),
+                              labelText: "Tempat",
+                              fillColor: ColorPalette.lg,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(20)),
+                              hintText: "Tempat"),
+                          name: 'Tempat'),
+                    ),
+                    SizedBox(
+                      width: 20.20,
+                      height: 20.0,
+                    ),
+                    Flexible(
+                      child: FormBuilderDateRangePicker(
+                        controller: controllertanggal,
+                        name: 'date_range',
+                        firstDate: DateTime(1970),
+                        lastDate: DateTime(2030),
                         decoration: InputDecoration(
                             suffixIcon: Icon(Icons.date_range),
                             contentPadding: EdgeInsets.all(10),
@@ -168,12 +197,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                 borderSide: BorderSide.none,
                                 borderRadius: BorderRadius.circular(20)),
                             hintText: "dd/MM/YYYY"),
-                        name: 'Tanggal Lahir'),
-                  ),
-                  SizedBox(
-                    width: 20.0,
-                  ),
-                ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20.0,
+                    ),
+                  ],
+                ),
               ),
             ),
             Row(children: <Widget>[
@@ -192,8 +222,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
               child: FormBuilderTextField(
+                  controller: controllerjalan,
                   decoration: InputDecoration(
-                      labelText: "Jalan",
+                      labelText: " ",
                       fillColor: ColorPalette.lg,
                       filled: true,
                       border: OutlineInputBorder(
@@ -219,12 +250,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(20)),
                 ),
-                // initialValue: 'Male',
                 allowClear: true,
                 hint: Text('Pilih Provinsi'),
                 validator: FormBuilderValidators.compose(
                     [FormBuilderValidators.required(context)]),
-                items: provinsiOptions
+                items: ["Jakarta", "Bandung", "Banten"]
                     .map((provinsi) => DropdownMenuItem(
                           value: provinsi,
                           child: Text('$provinsi'),
@@ -254,7 +284,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 hint: Text('Pilih Kota/Kabupaten'),
                 validator: FormBuilderValidators.compose(
                     [FormBuilderValidators.required(context)]),
-                items: kotaOptions
+                items: ["Cengkareng", "Meruya", "Joglo"]
                     .map((kota) => DropdownMenuItem(
                           value: kota,
                           child: Text('$kota'),
@@ -284,7 +314,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 hint: Text('Pilih Kecamatan'),
                 validator: FormBuilderValidators.compose(
                     [FormBuilderValidators.required(context)]),
-                items: kecamatanOptions
+                items: [
+                  "Banjarsari",
+                  "Bayah",
+                  "Bojongmanik",
+                  "Cibadak",
+                  "Cibeber",
+                  "Cigemblong",
+                  "Cihara"
+                ]
                     .map((kecamatan) => DropdownMenuItem(
                           value: kecamatan,
                           child: Text('$kecamatan'),
@@ -314,7 +352,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 hint: Text('Pilih Kelurahan/Desa'),
                 validator: FormBuilderValidators.compose(
                     [FormBuilderValidators.required(context)]),
-                items: kelurahanOptions
+                items: ["Bojongmenteng", "Cibugur", "Cisimeut", "Kanekes"]
                     .map((kelurahan) => DropdownMenuItem(
                           value: kelurahan,
                           child: Text('$kelurahan'),
@@ -323,7 +361,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(40, 30, 30, 30),
+              padding: const EdgeInsets.fromLTRB(40, 30, 20, 30),
               child: Row(
                 children: [
                   Flexible(
@@ -342,7 +380,18 @@ class _MyHomePageState extends State<MyHomePage> {
                       hint: Text('Pilih RT'),
                       validator: FormBuilderValidators.compose(
                           [FormBuilderValidators.required(context)]),
-                      items: rtOptions
+                      items: [
+                        '01',
+                        '02',
+                        '03',
+                        '04',
+                        '05',
+                        '06',
+                        '07',
+                        '08',
+                        '09',
+                        '10'
+                      ]
                           .map((rt) => DropdownMenuItem(
                                 value: rt,
                                 child: Text('$rt'),
@@ -370,7 +419,18 @@ class _MyHomePageState extends State<MyHomePage> {
                       hint: Text('Pilih RW'),
                       validator: FormBuilderValidators.compose(
                           [FormBuilderValidators.required(context)]),
-                      items: rwOptions
+                      items: [
+                        '01',
+                        '02',
+                        '03',
+                        '04',
+                        '05',
+                        '06',
+                        '07',
+                        '08',
+                        '09',
+                        '10'
+                      ]
                           .map((rw) => DropdownMenuItem(
                                 value: rw,
                                 child: Text('$rw'),
@@ -410,7 +470,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 validator: FormBuilderValidators.equal(
                   context,
                   true,
-                  errorText: 'You must accept terms and conditions to continue',
+                  errorText: 'Coba Lagi!!',
                 ),
               ),
             ),
@@ -449,7 +509,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(20)),
                 ),
-                // initialValue: 'Male',
                 allowClear: true,
                 hint: Text('Pilih Provinsi'),
                 validator: FormBuilderValidators.compose(
@@ -553,7 +612,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(40, 30, 30, 30),
+              padding: const EdgeInsets.fromLTRB(40, 30, 20, 30),
               child: Row(
                 children: [
                   Flexible(
@@ -572,7 +631,18 @@ class _MyHomePageState extends State<MyHomePage> {
                       hint: Text('Pilih RT'),
                       validator: FormBuilderValidators.compose(
                           [FormBuilderValidators.required(context)]),
-                      items: rtOptions
+                      items: [
+                        '01',
+                        '02',
+                        '03',
+                        '04',
+                        '05',
+                        '06',
+                        '07',
+                        '08',
+                        '09',
+                        '10'
+                      ]
                           .map((rt) => DropdownMenuItem(
                                 value: rt,
                                 child: Text('$rt'),
@@ -600,7 +670,18 @@ class _MyHomePageState extends State<MyHomePage> {
                       hint: Text('Pilih RW'),
                       validator: FormBuilderValidators.compose(
                           [FormBuilderValidators.required(context)]),
-                      items: rwOptions
+                      items: [
+                        '01',
+                        '02',
+                        '03',
+                        '04',
+                        '05',
+                        '06',
+                        '07',
+                        '08',
+                        '09',
+                        '10'
+                      ]
                           .map((rw) => DropdownMenuItem(
                                 value: rw,
                                 child: Text('$rw'),
@@ -618,9 +699,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
                 child: ElevatedButton(
                   onPressed: () {
-                    setState(() {
-                      FocusScope.of(context).unfocus();
-                    });
+                    _kirimdata();
                   },
                   child: Text('Simpan'),
                 )),
